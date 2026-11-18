@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clip Uploader</title>
+<style>
+  :root { --bg:#fafafa; --fg:#1a1a1a; --muted:#666; --box:#fff; --line:#ddd; --accent:#0a7cff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141414; --fg:#eee; --muted:#aaa; --box:#1e1e1e; --line:#333; --accent:#4da3ff; } }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, sans-serif; }
+  main { max-width:640px; margin:0 auto; padding:32px 16px; }
+  .box { background:var(--box); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  code { display:block; word-break:break-all; font-size:14px; margin:8px 0 12px; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:10px 16px; font-size:15px; cursor:pointer; }
+  .muted { color:var(--muted); font-size:14px; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Clip Uploader</h1>
+  <p>Privates Werkzeug, mit dem der Betreiber dieser Seite eigene Gaming-Clips auf seine eigenen
+     TikTok- und Instagram-Konten hochlädt.</p>
+
+  <div id="result" class="box" hidden>
+    <strong id="title"></strong>
+    <code id="code"></code>
+    <button id="copy" hidden>Code kopieren</button>
+    <p class="muted" id="hint"></p>
+  </div>
+
+  <p class="muted"><a href="privacy.html">Datenschutzerklärung</a> · <a href="terms.html">Nutzungsbedingungen</a></p>
+</main>
+<script>
+  const q = new URLSearchParams(location.search);
+  const box = document.getElementById('result');
+  if (q.get('code')) {
+    box.hidden = false;
+    document.getElementById('title').textContent = 'Login erfolgreich. Dein Code:';
+    document.getElementById('code').textContent = q.get('code');
+    document.getElementById('hint').textContent =
+      'Diesen Code sofort im Terminal eintauschen, denn er läuft nach wenigen Minuten ab.';
+    const b = document.getElementById('copy');
+    b.hidden = false;
+    b.onclick = () => navigator.clipboard.writeText(q.get('code')).then(() => b.textContent = 'Kopiert ✓');
+  } else if (q.get('error')) {
+    box.hidden = false;
+    document.getElementById('title').textContent = 'Login abgebrochen: ' + q.get('error');
+    document.getElementById('code').textContent = q.get('error_description') || '';
+  }
+</script>
+</body>
+</html>
